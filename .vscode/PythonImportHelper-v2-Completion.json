@@ -1,0 +1,62 @@
+[
+    {
+        "label": "setup",
+        "importPath": "setuptools",
+        "description": "setuptools",
+        "isExtraImport": true,
+        "detail": "setuptools",
+        "documentation": {}
+    },
+    {
+        "label": "find_packages",
+        "importPath": "setuptools",
+        "description": "setuptools",
+        "isExtraImport": true,
+        "detail": "setuptools",
+        "documentation": {}
+    },
+    {
+        "label": "d2l",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "d2l",
+        "description": "d2l",
+        "detail": "d2l",
+        "documentation": {}
+    },
+    {
+        "label": "time",
+        "importPath": "time",
+        "description": "time",
+        "isExtraImport": true,
+        "detail": "time",
+        "documentation": {}
+    },
+    {
+        "label": "numpy",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "numpy",
+        "description": "numpy",
+        "detail": "numpy",
+        "documentation": {}
+    },
+    {
+        "label": "requirements",
+        "kind": 5,
+        "importPath": "dl.d2l.pytorch.setup",
+        "description": "dl.d2l.pytorch.setup",
+        "peekOfCode": "requirements = [\n    'jupyter==1.0.0',\n    'numpy==1.21.5',\n    'matplotlib==3.5.1',\n    'requests==2.25.1',\n    'pandas==1.2.4'\n]\nsetup(\n    name='d2l',\n    version=d2l.__version__,",
+        "detail": "dl.d2l.pytorch.setup",
+        "documentation": {}
+    },
+    {
+        "label": "Timer",
+        "kind": 6,
+        "importPath": "dl.learn.utils.Timer",
+        "description": "dl.learn.utils.Timer",
+        "peekOfCode": "class Timer:  # @save\n    \"\"\"记录多次运行时间\"\"\"\n    def __init__(self):\n        self.times = []\n        self.start()\n    def start(self):\n        \"\"\"启动计时器\"\"\"\n        self.tik = time.time()\n    def stop(self):\n        \"\"\"停止计时器并将时间记录在列表中\"\"\"",
+        "detail": "dl.learn.utils.Timer",
+        "documentation": {}
+    }
+]
