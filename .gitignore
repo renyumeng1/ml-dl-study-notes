@@ -1,2 +1,4 @@
 d2l/
 .log
+.tmp*
+.vscode
