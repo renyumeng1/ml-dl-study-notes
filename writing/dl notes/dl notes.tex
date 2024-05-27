@@ -1,0 +1,123 @@
+% 纸张模式：护眼模式（geye）和朦胧模式（hazy）；
+% 适配不同设备，包括 Pad（默认），Screen（幻灯片），Kindle，PC（双页），通用（A4 纸张）；
+% 5 套颜色主题，分别是：\textcolor{eblue}{blue}（默认）、\textcolor{egreen}{green}、\textcolor{ecyan}{cyan}、 \textcolor{sakura}{sakura} 和 \textcolor{black}{black}；
+% 语言支持：中文（默认），英文；
+% 支持 \hologo{pdfLaTeX} 和 \hologo{XeLaTeX} 编译；
+% 更加美观的图表标题格式，列表环境，数学字体等；
+% 全局字体大小支持：8pt, 9pt, 10pt, 11pt, 12pt, 14pt, 17pt, 和 20pt；
+% 支持 \lstinline{newtx} 以及 \lstinline{mtpro2} 数学字体设置； 
+% 中文字体支持方正字体或者自定义字体；
+% 英文模式通过 \lstinline{bibstyle} 选项（默认为 \lstinline{apalike}）支持参考文献格式修改；
+% 支持参考格式显示格式修改 \lstinline{cite} 可选为 \lstinline{authoryear}、\lstinline{numbers} （默认）和 \lstinline{super}。
+% \documentclass[device=pad]{elegantnote}    % ipad screen size
+% \documentclass[device=kindle]{elegantnote} % kindle screen size
+% \documentclass[device=pc]{elegantnote}     % double pages for pc 
+% \documentclass[device=normal]{elegantnote} % a4 normal page
+% \documentclass[device=screen]{elegantnote} % 4:3 PPT size
+%!TEX program = xelatex
+\documentclass[cn,hazy,blue,14pt,normal]{elegantnote}
+
+\title{深度学习个人笔记}
+\author{Amamiyaren}
+\institute{my own deep learning notes}
+\date{\zhdate{2024/5/17}}
+\usepackage{array}
+
+\begin{document}
+\maketitle
+\numberwithin{equation}{section}
+\section{多元线性回归}
+
+\subsection{基本形式}
+线性模型试图学得一个通过属性的线性组合来预测的函数，基本形式如下：
+\begin{align}
+    f(\textbf{x})=w_1x_1+w_2x_2+\dots+w_dx_d+b
+\end{align}
+向量形式如下:
+\begin{align}
+    f(\textbf{x})=\textbf{w}^{\textbf{T}}\textbf{x}+\textbf{b}
+\end{align}
+\subsection{一元情形}
+一般采用最小二乘法确定模型参数,一元情形推导如下：
+\begin{align}
+  (w^*,b^*) &= \mathop{\arg\min}\limits_{(w,b)}\sum_{i=1}^{m}{(f(x_i)-yi)^2}\nonumber\\&=\mathop{\arg\min}\limits_{(w,b)}\sum_{i=1}^{m}{(y_i-wx_i-b)^2}
+ \end{align}
+ 我们令$E_{(w,b)}=\mathop{\arg\min}\limits_{(w,b)}\sum_{i=1}^{m}{(y_i-wx_i-b)^2}$，等式两边同时对$w$和$b$求导有：
+ 
+ \begin{align}
+  \frac{\partial E_{(w,b)}}{\partial b} &=2\Big(mb- \sum_{i=1}^m(y_i-wx_i)\Big)
+\end{align}
+
+\begin{align}
+  \frac{\partial E_{(w,b)}}{\partial w} &= \sum_{i=1}^{m}2(y_i-wx_i-b)(-x_i) \nonumber \\ &= 2 \Big (w\sum_{i_1}^mx^2-\sum_{i=1}^m(y_i-b)x_i\Big )
+\end{align}
+然后令式(1.4)和(1.5)为零得到：
+\begin{align}
+  b&=\frac{1}{m}\sum_{i=1}^my_i-wx_i \nonumber\\&=\bar{y}-w\bar{x}\
+\end{align}
+
+\begin{align}
+  w\sum_{i=1}^m{x_i^2}=\sum_{i=1}^m{(y_i-b)x_i}
+\end{align}
+
+将(1.6)带入(1.7)得到：
+\begin{align}
+  w\sum_{i=1}^m{x_i^2}&=\sum_{i=1}^m{(y_ix_i)-\sum_{i=1}^m(\bar{y}-w\bar{x})x_i}\nonumber \\ &=\sum_{i=1}^my_ix_i - \bar{y}\sum_{i=1}^mx_i+w\bar{x}\sum_{i=1}^mx_i
+\end{align}
+对(1.8)式进行化简，最终可得:
+\begin{align}
+  w = \frac{\sum_{i=1}^my_ix_i-\bar{y}\sum_{i=1}^mx_i}{\sum_{i=1}^mx_i^2-\sum_{i=1}^m\bar{x}x_i}
+\end{align}
+
+又由于$\bar{y}\sum_{i=1}^mx_i=\frac{1}{m}\sum_{i=1}^m{y_i}\cdot\sum_{i=1}^mx_i=\bar{x}\sum_{i=1}^my_i$和$\bar{x}\sum_{i=1}^my_i=\frac{1}{m}\sum_{i=1}^mx_i\sum_{i=1}^mx_i=\frac{1}{m}\Big(\sum_{i=1}^mx_i\Big)^2$将这两个式子带入(1.9)式进行进一步化简得到：
+\begin{align}
+  w=\frac{\sum_{i=1}^my_i(x_i-\bar{x})}{\sum_{i=1}^mx_i^2-\Big(\sum_{i=1}^mx_i\Big)^2}
+\end{align}
+\subsubsection{一元情形的矩阵形式}
+由于 python 中累加形式只能使用\texttt{for}循环进行迭代，运行效率比较低，如果将(1.20)式转化为矩阵形式可以使用\texttt{numpy}等第三方库对其矩阵运算进行加速，公式推导如下：
+\begin{align}
+  \bar{y}\sum_{i=1}^mx_i\bar{x}\sum_{i=1}^my_i=\sum_{i=1}^m\bar{y}x_i=\sum_{i=1}^m\bar{x}y_i =m\bar{x}\bar{y}=\sum_{i=1}^m\bar{x}\bar{y}
+\end{align}
+
+\begin{align}
+  \sum_{i=1}^mx_i\bar{x}=\bar{x}\sum_{i=1}^mx_i=\bar{x}\cdot m\cdot \frac{1}{m}\sum_{i=1}^mx_i=m\bar{x}^2=\sum_{i=1}^m\bar{x}^2
+\end{align}
+将式(1.21)和式(1.22)带入式(1.9)可以得到：
+\begin{align}
+  w&=\frac{\sum_{i=1}^m(y_ix_i-y_i\bar{x}-x_i\bar{y}+\bar{x}\bar{y})}{\sum_{i=1}^m(x_i^2-\bar{x}x_i-\bar{x}x_i+\bar{x}^2)} \nonumber\\&=\frac{\sum_{i=1}^m(x_i-\bar{x})(y_i-\bar{y})}{\sum_{i=1}^m(x_i-\bar{x})^2}
+\end{align}
+记$x=(x_1;x_2...x_m)$,$x_d=(x_i-\bar{x};x_2-\bar{x}...x_m-\bar{x})$,$y_d$同$x_d$,再由向量内积的定义可以得到:
+
+\begin{align}
+  w=\frac{x_d^Ty_d}{x_d^Tx_d}
+\end{align}
+\subsubsection{多元}
+多元的情形可由一元的情形举一反三推导出，如下：
+\begin{align}
+  w^*&=\mathop{\arg\min}\limits_{(\hat{w})}\sum_{i=1}^{m}{(y_i-\hat{w}^Tx_i)^2} \nonumber\\ &=\mathop{\arg\min}\limits_{(\hat{w})}\sum_{i=1}^{m}{(y_i-x_i^T\hat{w})^2} \nonumber \\ &=\mathop{\arg\min}\limits_{(\hat{w})}\begin{bmatrix}y_1-x_1^T\hat{w}\dots y_m-x_m^T\hat{w}\end{bmatrix} \cdot \begin{bmatrix}y_1-x_1^T\hat{w} \\ \dots \\ y_m-x_m^T\hat{w}\end{bmatrix}
+\end{align}
+其中：
+\begin{align}
+  \begin{bmatrix}y_1-x_1^T\hat{w} \\ y_2-x_2^T\hat{w} \\\dots \\ y_m-x_m^T\hat{w}\end{bmatrix}&=\begin{bmatrix}y_1\\ y_2\\ \dots\\ y_m\end{bmatrix} - \begin{bmatrix}x_1^T\hat{w}\\ x_2^T\hat{w} \\ \dots\\ x_m^T\hat{w}\end{bmatrix} \nonumber \\ &=y-\begin{bmatrix}x_1^T \\ x_2^T \\ \dots \\ x_m^T\end{bmatrix}\cdot \hat{w} \nonumber \\ &= y-X\hat{w} 
+\end{align} 
+所以:
+\begin{align}\hat{w}^*=\mathop{\arg\min}\limits_{(\hat{w})}(y-X\hat{w})^T(y-X\hat{w})\end{align}
+现引入两个定理对$\hat{w}$的最优解做进一步推导。
+
+\subsubsection{w预测值的求解}
+$Def_{1.28}$：设$D\subset R^n$为非空开凸集$f(x)$是定义在$D$上的实值函数，
+且$f(x)$在$D$上二阶连续可微，若$f(x)$的$Hession$矩阵$\nabla^2f(x)$在$D$上半正定则$f(x)$是$D$上的凸函数，
+若$\nabla^2f(x$)在$D$上正定则$f(x)$为$D$上的严格凸函数。
+$Def_{1.29}$：若$f(x)$为凸函数且$f(x)$一阶连续可微则$x^*$是全局最优解的充要条件为其梯度等于零向量即:
+$$\nabla f(x^*)=\textbf{0}$$
+\begin{align}E_{\hat{w}}&=(y-X\hat{w})^T(y-X\hat{w})\nonumber \\&= y^Ty-y^TX\hat{w}-\hat{w}^TX^Ty+\hat{w}^TX^TX\hat{w} \end{align}
+\begin{align}\frac{\partial E\hat{w}}{\partial \hat{w}}&= 0-X^Ty-X^Ty+(X^TX+X^TX)\hat{w}\nonumber\\&=2X^T(X\hat{w}-y)\end{align}
+由式(1.31)再对$\hat{w}^T$求偏导可以得到$E_{\hat{w}} Hession$矩阵的表达式，如下：
+\begin{align}
+  \nabla^2 E_{\hat{w}}&=\frac{\partial }{\partial w^T}\Big (\frac{\partial E\hat{w}}{\partial w}\Big) \nonumber \\ &=2X^TX 
+\end{align}
+由$Def_{1.28},Def_{1.29}$当$X^TX$为正定矩阵时，令其梯度为零向量可解得方程的全局最优解即：
+\begin{align}
+  \hat{w}^*=(X^TX)^{-1}X^Ty
+\end{align}
+\end{document}
